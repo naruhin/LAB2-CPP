@@ -19,6 +19,36 @@ struct building {
 
 void menu(building *Array,int N);
 
+//Метод  ввода с проверкой вводимого 
+int readInt() {
+	unsigned short N;
+	while (!(cin >> N) || (cin.peek() != '\n')) {
+		cin.clear();
+		while (cin.get() != '\n');
+		cout << "Ошибка!Введите число - " << endl;
+	}
+	return N;
+}
+
+//Метод ввода с проверкой ,что вводимое число позитивное 
+int readPositiveInt() {
+	unsigned short N;
+	bool check = false;
+	unsigned short temp;
+	while (check == false) {
+		temp = readInt();
+		if (temp & (1U << (sizeof(temp) * 8 - 1))) {
+			cout << "Ошибка! Введите положительное число - ";
+		}
+		else {
+			N = temp;
+			check = true;
+		}
+	}
+	return N;
+}
+
+//Метод вывода отдельных структур массива
 void print(building *Array, int N ,int i) {
 	cout << setw(22 + Array[i].adress.length()) << setfill('-') << '-' << ends << endl;
 	cout << "|Адресс             | " << setw(Array[i].adress.length()) << setfill(' ') << Array[i].adress << '|' << ends << endl;
@@ -36,6 +66,7 @@ void print(building *Array, int N ,int i) {
 	cout << endl;
 }
 
+//Заполнение дин.массива
 void fillArray(building *Array, int N) {
 	cin.ignore();
 	for (int i = 0; i < N; i++)
@@ -45,19 +76,20 @@ void fillArray(building *Array, int N) {
 		cout << "Тип здания - ";
 		getline(cin, Array[i].typeOfBuilding);
 		cout << "Количество этажей - ";
-		cin >> Array[i].numberOfFloors;
+		Array[i].numberOfFloors = readPositiveInt();
 		cout << "Количество квартир - ";
-		cin >> Array[i].numberOfFlats;
+		Array[i].numberOfFlats = readPositiveInt();
 		cout << "Срок эксплуатации - ";
-		cin >> Array[i].lifetime;
+		Array[i].lifetime = readPositiveInt();
 		cout << "Срок до ремонта - ";
-		cin >> Array[i].termToOverhaul;
+		Array[i].termToOverhaul = readPositiveInt();
 		cin.ignore();
 		cout << endl;
 	}	
 	menu(Array, N);
 }
 
+//Сортировка массива по указанному параметру
 void sortByPresetField(building *Array, int N) {
 	int choice;
 	cout << "Введите параметр по которому требуется отсортировать массив." <<
@@ -65,7 +97,7 @@ void sortByPresetField(building *Array, int N) {
 		"\n 2. Кол-во квартир." <<
 		"\n 3. Срок эксплуатации." <<
 		"\n 4. Срок до ремонта." << endl;
-	cin >> choice;
+	choice = readPositiveInt();
 	switch (choice) {
 	case 1:
 		for (int i = N - 1; i >= 0; i--) {
@@ -131,6 +163,7 @@ void sortByPresetField(building *Array, int N) {
 	menu(Array, N);
 }
 
+//Вывод содержимого массива
 void displayArray(building *Array, int N) {
 	cout << "\t\t\tВсе здания:" << endl;
 	for (int i = 0; i < N; i++) {
@@ -139,6 +172,7 @@ void displayArray(building *Array, int N) {
 	menu(Array, N);
 }
 
+//Поиск и вывод по значению из указаного поля
 void findByValueOfPresetField(building *Array, int N) {
 	int choice;
 	cout << "Введите параметр по которому требуется найти структуру (структуры)." <<
@@ -148,7 +182,7 @@ void findByValueOfPresetField(building *Array, int N) {
 		"\n 4. Срок эксплуатации." <<
 		"\n 5. Срок до ремонта." << 
 		"\n 6. Кол-во этажей." << endl;
-	cin >> choice;
+	choice = readPositiveInt();
 	cin.ignore();
 
 	string temp1;
@@ -185,7 +219,7 @@ void findByValueOfPresetField(building *Array, int N) {
 		break;
 	case 3:
 		cout << "Введите кол-во квартир - ";
-		cin >> temp2;
+		temp2 = readPositiveInt();
 		for (int i = 0; i < N; i++)
 		{
 			if (temp2 == Array[i].numberOfFlats) {
@@ -198,7 +232,7 @@ void findByValueOfPresetField(building *Array, int N) {
 		break;
 	case 4:
 		cout << "Введите срок эксплуатации - ";
-		cin >> temp2;
+		temp2 = readPositiveInt();
 		for (int i = 0; i < N; i++)
 		{
 			if (temp2 == Array[i].lifetime) {
@@ -211,7 +245,7 @@ void findByValueOfPresetField(building *Array, int N) {
 		break;
 	case 5:
 		cout << "Введите срок до ремонта - ";
-		cin >> temp2;
+		temp2 = readPositiveInt();
 		for (int i = 0; i < N; i++)
 		{
 			if (temp2 == Array[i].termToOverhaul) {
@@ -224,7 +258,7 @@ void findByValueOfPresetField(building *Array, int N) {
 		break;
 	case 6:
 		cout << "Введите кол-во этажей - ";
-		cin >> temp2;
+		temp2 = readPositiveInt();
 		for (int i = 0; i < N; i++)
 		{
 			if (temp2 == Array[i].numberOfFloors) {
@@ -242,6 +276,7 @@ void findByValueOfPresetField(building *Array, int N) {
 	menu(Array, N);
 }
 
+//Добавление в массив ещё одной структуры(структур)
 void pushBack(building *&Array, int &N,int n) {
 	for (int i = 0; i < n; i++)
 	{
@@ -263,13 +298,13 @@ void pushBack(building *&Array, int &N,int n) {
 		cout << "Тип здания - ";
 		getline(cin,newArray[N].typeOfBuilding);
 		cout << "Количество этажей - ";
-		cin >> newArray[N].numberOfFloors;
+		newArray[N].numberOfFloors = readPositiveInt();
 		cout << "Количество квартир - ";
-		cin >> newArray[N].numberOfFlats;
+		newArray[N].numberOfFlats = readPositiveInt();
 		cout << "Срок эксплуатации - ";
-		cin >> newArray[N].lifetime;
+		newArray[N].lifetime = readPositiveInt();
 		cout << "Срок до ремонта - ";
-		cin >> newArray[N].termToOverhaul;
+		newArray[N].termToOverhaul = readPositiveInt();
 		cin.ignore();
 		cout << endl;
 		N++;
@@ -280,6 +315,7 @@ void pushBack(building *&Array, int &N,int n) {
 	menu(Array, N);
 }
 
+//Меню
 void menu(building *Array, int N) {
 	
 	cout << "\n Что сделать? \n\t 1. Заполнить массив." <<
@@ -289,7 +325,7 @@ void menu(building *Array, int N) {
 			"\n\t 5. Поиск и вывод по заданому значению поля." <<
 			"\n\t 6. Закончить работу. \n - ";
 	int check;
-	cin >> check;
+	check = readPositiveInt();
 
 	switch (check) {
 	case 1:
@@ -302,7 +338,7 @@ void menu(building *Array, int N) {
 	case 3:
 		cout << "Введите кол-во зданий, которые нужно добавить - ";
 		int n;
-		cin >> n;
+		n = readPositiveInt();
 		pushBack(Array, N, n);
 		break;
 	case 4:
@@ -326,9 +362,8 @@ int main()
 
 	unsigned short N;
 
-	
 	cout << "Введите кол-во зданий - ";
-	cin >> N;
+	N = readPositiveInt();
 	cin.ignore();
 
 	building *BUILDINGS = new building[N];
